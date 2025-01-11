@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body>
+
+    <div class="form-container">
+      <form>
+        <h1 class="form-label">Login</h1>
+        <input type="text" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button type="submit" id="submit">Login</button>
+        <span class="error-label"></span>
+      </form>
+    </div>
+
+    
+    <script type="module" src="./modules/initFirebaseModule.js"></script>
+    <script type="module" src="./modules/loginModule.js"></script>
+  </body>
+</html>

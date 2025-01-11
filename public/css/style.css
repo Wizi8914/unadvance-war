@@ -1,0 +1,105 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 300px;
+}
+.form-container form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.form-container form button {
+  margin-top: 5px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+.form-container form .form-label {
+  margin-bottom: 10px;
+  color: #333;
+}
+.form-container form .error-label {
+  text-align: center;
+  margin: 5px;
+  color: red;
+}
+.form-container .sign-up_redirect, .form-container .login_redirect {
+  margin-top: 20px;
+  color: #333;
+}
+.form-container .sign-up_redirect a, .form-container .login_redirect a {
+  color: #333;
+  font-weight: 600;
+}
+
+input, select, textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.hat, .shoes, .name, .remark {
+  width: 78px;
+}
+
+h1 {
+  margin-bottom: 40px;
+}
+
+.splitscreen {
+  display: flex;
+  height: 100vh;
+}
+.splitscreen-left, .splitscreen-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+}
+.splitscreen-left .name-container, .splitscreen-left .hat-container, .splitscreen-left .shoes-container, .splitscreen-left .remark-container, .splitscreen-right .name-container, .splitscreen-right .hat-container, .splitscreen-right .shoes-container, .splitscreen-right .remark-container {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  width: 300px;
+  background-color: #575757;
+  padding: 5px;
+}
+.splitscreen-left button, .splitscreen-right button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 0;
+  width: 250px;
+}
+.splitscreen-left button:hover, .splitscreen-right button:hover {
+  background-color: #d0d0d0;
+}
+.splitscreen-left .human-info, .splitscreen-right .human-info {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}/*# sourceMappingURL=style.css.map */
