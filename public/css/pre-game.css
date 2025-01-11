@@ -1,0 +1,33 @@
+.header {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  color: black;
+}
+.header .logout-button {
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.header-title {
+  font-size: 2em;
+  margin: 0;
+}
+.header-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.header .player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 3px;
+}
+.header .player-info p {
+  margin: 5px 0;
+}/*# sourceMappingURL=pre-game.css.map */

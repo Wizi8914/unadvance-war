@@ -3,11 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Unadvance War - Preparation</title>
+    <title>Unadvance War - New Game</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/preGame.css">
+    <link rel="stylesheet" href="./css/newGame.css">
   </head>
   <body>
     <h1 class="header-title">Unadvance War</h1>
@@ -23,15 +24,15 @@
       </nav>
     </header>
 
-    <section class="game-options">
-      <button class="game-button" id="create-game-button">Create New Game</button>
-      <button class="game-button" id="play-current-game-button">Resume Last Game</button>
+    <section class="new-game">
+      <input type="text" id="searchBar" placeholder="Search a player..." autocomplete="off"/>
+      
+      <ul id="suggestions" style="list-style: none; padding: 0;"></ul>
     </section>
 
     <script type="module" src="./modules/initFirebaseModule.js"></script>
     <script type="module" src="./modules/verifyAuthModule.js"></script>
     <script type="module" src="./modules/headerModule.js"></script>
-
-    <script src="./js/preGame.js"></script>
+    <script type="module" src="./modules/newGameModule.js"></script>
   </body>
 </html>

@@ -82,12 +82,6 @@ function confirmUserSignIn(user) {
     userLogin.textContent = `Account created for ${user}. Please verify your email address.`;
 }
 
-function redirectToPreGame() {
-    setTimeout(() => {
-        window.location.href = "../pre-game.html";
-    }, 3000);
-}
-
 function resetForm() {
     document.getElementById("name").value = "";
     document.getElementById("email").value = "";

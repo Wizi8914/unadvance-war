@@ -1,0 +1,28 @@
+#searchBar {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#suggestions {
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+  background-color: white;
+}
+
+#suggestions li {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+#suggestions li:last-child {
+  border-bottom: none;
+}
+
+#suggestions li:hover {
+  background-color: #f0f0f0;
+}/*# sourceMappingURL=newGame.css.map */

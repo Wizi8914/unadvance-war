@@ -2,7 +2,22 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    list-style: none;
+    font-family: "Jersey 10", Arial, Helvetica, sans-serif;
+    font-size: large;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #444;
+    }
 }
 
 .form-container {
@@ -25,18 +40,14 @@
         }
 
         button {
-            margin-top: 5px;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: #fff;
-            cursor: pointer;
+            margin-top: 10px;
         }
 
         .form-label {
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             color: #333;
+            font-size: 4em;
+            align-self: center;
         }
 
         .error-label {
@@ -57,68 +68,3 @@
     }
 }
 
-///////////////////////////////////////////
-
-input, select, textarea {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-}
-
-
-.hat, .shoes, .name, .remark {
-    width: 78px;
-}
-
-h1 {
-    margin-bottom: 40px;
-}
-
-.splitscreen {
-    display: flex;
-    height: 100vh;
-
-    &-left, &-right {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background-color: #333;
-        color: #fff;
-        
-
-        .name-container, .hat-container, .shoes-container, .remark-container {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-            width: 300px;
-            background-color: #575757;
-            padding: 5px;
-        }
-
-        button {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 20px 0;
-
-            width: 250px;
-
-            &:hover {
-                background-color: #d0d0d0;
-            }
-        }
-
-        .human-info {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 100%;
-        }
-
-
-    }
-}

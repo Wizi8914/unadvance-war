@@ -16,8 +16,6 @@ const errorMessages = {
 
 const auth = getAuth();
 
-//testAuth();
-
 const submitBtn = document.getElementById("submit");
 
 submitBtn.addEventListener("click", event => {
@@ -34,9 +32,8 @@ submitBtn.addEventListener("click", event => {
     .then((userCredential) => {
       const user = userCredential.user;
 
-      console.log(user)
-
       displayUserLogin(user);
+      openGame();
       resetForm();
     })
     .catch((error) => {
@@ -50,6 +47,10 @@ submitBtn.addEventListener("click", event => {
 
 });
 
+
+function openGame() {
+    window.location.href = "pre-game.html";
+}
 
 function displayErrorCode(message) {
     displayError(errorMessages[message]);
