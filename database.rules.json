@@ -1,6 +1,14 @@
 {
   "rules": {
     ".read": true,
-    ".write": true
+    ".write": true,
+    
+    "players": {
+      ".indexOn": "name"
+    },
+      
+    "games": {
+      ".indexOn": ["player1", "player2"]
+    }
   }
 }
