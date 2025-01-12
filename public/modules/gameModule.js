@@ -10,19 +10,25 @@ function getGameID() {
 
 
 function getGameInfo(gameID) {
+    const db = getDatabase();
     const gameRef = ref(db, `games/${gameID}`);
+  
+    return get(gameRef)
+      .then((snapshot) => (snapshot.exists() ? snapshot.val() : null))
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des infos de la partie :", error);
+        throw error;
+      });
+  }
 
-    console.log(gameRef);
-
-    get(gameRef).then((snapshot) => {
-        if (snapshot.exists()) {
-            return snapshot.val();
+getGameInfo(getGameID())
+    .then((gameInfo) => {
+        if (gameInfo) {
+            console.log("Informations de la partie :", gameInfo);
         } else {
-            return null;
+            console.log(`Aucune partie trouvée avec l'ID : ${gameID}`);
         }
-    });
-}
-
-const gameInfo = getGameInfo(getGameID());
-
-console.log(gameInfo);
+        })
+    .catch((error) => {
+        console.error("Erreur :", error);
+});
