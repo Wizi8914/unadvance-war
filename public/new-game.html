@@ -25,9 +25,14 @@
     </header>
 
     <section class="new-game">
-      <input type="text" id="searchBar" placeholder="Search a player..." autocomplete="off"/>
-      
-      <ul id="suggestions" style="list-style: none; padding: 0;"></ul>
+
+      <h2 class="new-game-title">Please enter your opponent's name</h2>
+      <div class="searchbar_container">
+        <input type="text" id="searchBar" placeholder="Search a player..." autocomplete="off"/>
+        
+        <ul id="suggestions" style="list-style: none; padding: 0;"></ul>
+      </div>
+      <button class="new-game-button disabled">New Game</button>
     </section>
 
     <script type="module" src="./modules/initFirebaseModule.js"></script>

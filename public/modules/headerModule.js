@@ -21,10 +21,14 @@ onAuthStateChanged(auth, (user) => {
         playerName.textContent = data.name;
         playerAge.textContent = data.age;
         playerEmail.textContent = user.email;
-        emailVerified.textContent = user.emailVerified;
+        emailVerified.textContent = booleanToText(user.emailVerified);
     });
 
 });
+
+function booleanToText(boolean) {
+    return boolean ? "Yes" : "No";
+}
 
 disconnectBtn.addEventListener('click', () => {
     auth.signOut().then(() => {

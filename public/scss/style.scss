@@ -7,6 +7,12 @@
     font-size: large;
 }
 
+body {
+    background-color: #dddbdb;
+    color: #1b1b1b;
+}
+
+
 button {
     padding: 10px;
     border: none;
@@ -68,3 +74,21 @@ button {
     }
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 5px;
+
+    &:hover {
+        background-color: #444;
+        cursor: pointer;
+    }
+}
+
+::-webkit-scrollbar-track {
+    background-color: #ccc;
+    border-radius: 5px;
+}

@@ -7,6 +7,11 @@
   font-size: large;
 }
 
+body {
+  background-color: #dddbdb;
+  color: #1b1b1b;
+}
+
 button {
   padding: 10px;
   border: none;
@@ -58,4 +63,22 @@ button:hover {
 .form-container .sign-up_redirect a, .form-container .login_redirect a {
   color: #333;
   font-weight: 600;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #444;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #ccc;
+  border-radius: 5px;
 }/*# sourceMappingURL=style.css.map */
