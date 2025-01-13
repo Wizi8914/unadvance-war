@@ -5,10 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/game.css">
   </head>
   <body>
+
+    <h1 class="header-title">Unadvance War</h1>
+    <header class="header">
+      <nav class="header-nav">
+        <ul class="player-info" style="align-items: start;">
+          <li id="player1-name">John Doe</li>
+          <li id="player1-email">john.doe@example.com</li>
+          <li id="player1-money"> 0 $</li>
+        </ul>
+      </nav>
+
+      <nav class="header-nav">
+        <ul class="player-info">
+          <li id="player2-name">John Doe</li>
+          <li id="player2-email">john.doe@example.com</li>
+          <li id="player2-money"> 0 $</li>
+        </ul>
+      </nav>
+    </header>
+
     <section class="game">
       <div class="game__board">
         <div class="game__board__row">
@@ -946,7 +967,7 @@
   
     <script type="module" src="./modules/initFirebaseModule.js"></script>
     <script type="module" src="./modules/verifyAuthModule.js"></script>
+    <script type="module" src="./modules/setUrlModule.js"></script>
     <script type="module" src="./modules/gameModule.js"></script>
-    <script type="module" src="./modules/generateBackgroundModule.js"></script>
   </body>
 </html>

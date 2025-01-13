@@ -102,8 +102,11 @@ async function createGame() {
   
     const gameData = {
         player1: player1Uid,
+        player1Money: 0,
         player2: player2Uid,
+        player2Money: 0,
         mapType: pickRandomMap(),
+        pawnMap: null,
         status: "ongoing",
         createdAt: Date.now() 
     };

@@ -38,7 +38,7 @@ submitBtn.addEventListener("click", event => {
         const user = userCredential.user;
 
 
-        initPlayerInDatabase(user.uid, name, age);
+        initPlayerInDatabase(user.uid, name, age, email);
 
         sendEmailVerification(auth.currentUser).then(() => {
             console.log("Email sent");
@@ -56,12 +56,13 @@ submitBtn.addEventListener("click", event => {
     });
 });
 
-function initPlayerInDatabase(uid, name, age) {
+function initPlayerInDatabase(uid, name, age, email) {
     const db = getDatabase();
     const playersRef = ref(db, 'players/' + uid);
     set(playersRef, {
         name: name,
-        age: age
+        age: age,
+        email: email
     });
 }
 
@@ -71,6 +72,7 @@ function displayErrorCode(message) {
 
 function displayError(message) {
     const error = document.querySelector(".error-label");
+    error.style.color = "red";
 
     error.textContent = message
 }

@@ -3,81 +3,89 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 const auth = getAuth();
 const db = getDatabase();
+
 const GAME_ID = getGameID();
 
-let USER;
-
-onAuthStateChanged(auth, (currentUser) => {
-    if (currentUser) {
-        USER = currentUser;
-        
-        initializeGame();
-    }
-});
+const ROW_COUNT = 15;
+const COL_COUNT = 20;
 
 function getGameID() {
     return window.location.href.split("=")[1];
 }
 
-async function getGameIdForCurrentPlayer() {
-    const playerUid = USER.uid;
-    const gamesRef = ref(db, "games");
-    const player1Query = query(gamesRef, orderByChild("player1"), equalTo(playerUid));
-    const player2Query = query(gamesRef, orderByChild("player2"), equalTo(playerUid));
+const IMAGE_CODE = {
+    blue_city: "../../assets/image/blue/blue_city.png",
+    blue_heli: "../../assets/image/blue/blue_heli.png",
+    blue_inf: "../../assets/image/blue/blue_inf.png",
+    blue_jeep: "../../assets/image/blue/blue_jeep.png",
+    blue_lm: "../../assets/image/blue/blue_lm.png",
+    blue_tank: "../../assets/image/blue/blue_tank.png",
 
-    const [player1Snapshot, player2Snapshot] = await Promise.all([get(player1Query), get(player2Query)]);
+    red_city: "../../assets/image/red/red_city.png",
+    red_heli: "../../assets/image/red/red_heli.png",
+    red_inf: "../../assets/image/red/red_inf.png",
+    red_jeep: "../../assets/image/red/red_jeep.png",
+    red_lm: "../../assets/image/red/red_lm.png",
+    red_tank: "../../assets/image/red/red_tank.png",
 
-    if (player1Snapshot.exists()) {
-        return Object.keys(player1Snapshot.val())[0];
-    } else if (player2Snapshot.exists()) {
-        return Object.keys(player2Snapshot.val())[0];
-    } else {
-        return null;
+    neutral_city: "../../assets/image/environment/neutral_city.png",
+
+    forest1: "../../assets/image/environment/forest1.png",
+    forest2: "../../assets/image/environment/forest2.png",
+    forest3: "../../assets/image/environment/forest3.png",
+    forest4: "../../assets/image/environment/forest4.png",
+    grass: "../../assets/image/environment/grass.png",
+    mountain: "../../assets/image/environment/mountain.png",
+
+    road_d: "../../assets/image/road/road_d.png",
+    road_dl: "../../assets/image/road/road_dl.png",
+    road_dlr: "../../assets/image/road/road_dlr.png",
+    road_dr: "../../assets/image/road/road_dr.png",
+    road_l: "../../assets/image/road/road_l.png",
+    road_lr: "../../assets/image/road/road_lr.png",
+    road_r: "../../assets/image/road/road_r.png",
+    road_u: "../../assets/image/road/road_u.png",
+    road_ud: "../../assets/image/road/road_ud.png",
+    road_udl: "../../assets/image/road/road_udl.png",
+    road_udr: "../../assets/image/road/road_udr.png",
+    road_ul: "../../assets/image/road/road_ul.png",
+    road_ulr: "../../assets/image/road/road_ulr.png",
+    road_ur: "../../assets/image/road/road_ur.png",
+
+};
+
+const tiles = document.querySelectorAll(".game__board__cell");
+
+function renderMap(map) {
+    for (let row = 0; row < ROW_COUNT; row++) {
+        for (let col = 0; col < COL_COUNT; col++) {
+            tiles[row * COL_COUNT + col].setAttribute("data-type", map[row][col]);
+            tiles[row * COL_COUNT + col].children[0].src = IMAGE_CODE[map[row][col]];
+        }
     }
 }
 
+get(ref(db, `games/${GAME_ID}`))
+    .then((snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
 
-function getGameInfo(gameID) {
-    const db = getDatabase();
-    const gameRef = ref(db, `games/${gameID}`);
-    
-    return get(gameRef)
-    .then((snapshot) => (snapshot.exists() ? snapshot.val() : null))
-    .catch((error) => {
-        console.error(error);
-        throw error;
-    });
-}
+            // Get the map data
+            get(ref(db, `maps/map_${data.mapType}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const mapData = snapshot.val();
 
-function resetGameURL() {
-    getGameIdForCurrentPlayer()
-        .then((gameId) => {
-            if (gameId) {
-                window.location.href = `game.html?id=${gameId}`;
-            } else {
-                console.log("No game found for the current player.");
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-        });
-}
-
-function initializeGame() {
-    if (!GAME_ID) resetGameURL();
-    if (!GAME_ID.startsWith("-")) resetGameURL();
-
-    getGameInfo(GAME_ID)
-        .then((gameInfo) => {
-            if (gameInfo) {
-                console.log("Informations de la partie :", gameInfo);
-            } else {
-                resetGameURL();
-            }
-        })
-        .catch((error) => {
-            console.error("Erreur :", error);
-        });
-}
-
-
+                        renderMap(mapData.map);
+                    } else {
+                        alert("No map found");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+            
+        } else {
+            alert("No data found");
+        }
+    })
