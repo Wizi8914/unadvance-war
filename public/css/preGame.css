@@ -18,6 +18,10 @@
   cursor: pointer;
   font-size: 4em;
 }
-.game-options button:hover {
+.game-options button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.game-options button:not(.disabled):hover {
   background-color: #444;
 }/*# sourceMappingURL=preGame.css.map */

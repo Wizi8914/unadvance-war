@@ -30,6 +30,7 @@
 }
 .game__board__cell .pawn {
   cursor: pointer;
+  scale: 79%;
   position: absolute;
 }
 .game__board__background-image {

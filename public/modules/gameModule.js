@@ -59,54 +59,59 @@ const IMAGE_CODE = {
 
 const units = {
     inf: {
-      price: 50,
-      health: 10,
-      power: {
-        infanterie: 6,
-        jeep: 6,
-        tank: 3,
-        helicoptere: 2
-      }
+        price: 50,
+        health: 10,
+        range: 1,
+        power: {
+            infanterie: 6,
+            jeep: 6,
+            tank: 3,
+            helicoptere: 2
+        }
     },
     jeep: {
-      price: 100,
-      health: 20,
-      power: {
-        infanterie: 6,
-        jeep: 6,
-        tank: 3,
-        helicoptere: 10
-      }
+        price: 100,
+        health: 20,
+        range: 2,
+        power: {
+            infanterie: 6,
+            jeep: 6,
+            tank: 3,
+            helicoptere: 10
+        }
     },
     tank: {
-      price: 200,
-      health: 50,
-      power: {
-        infanterie: 2,
-        jeep: 8,
-        tank: 8,
-        helicoptere: 2
-      }
+        price: 200,
+        health: 50,
+        range: 1,
+        power: {
+            infanterie: 2,
+            jeep: 8,
+            tank: 8,
+            helicoptere: 2
+        }
     },
     lm: {
-      price: 300,
-      health: 30,
-      power: {
-        infanterie: 8,
-        jeep: 10,
-        tank: 15,
-        helicoptere: 10
-      }
+        price: 300,
+        health: 30,
+        range: 1,
+        power: {
+            infanterie: 8,
+            jeep: 10,
+            tank: 15,
+            helicoptere: 10
+        }
     },
     heli: {
-      price: 300,
-      health: 20,
-      power: {
-        infanterie: 8,
-        jeep: 12,
-        tank: 15,
-        helicoptere: 1
-      }
+        price: 300,
+        health: 20,
+        range: 2,
+        power: {
+            infanterie: 8,
+            jeep: 12,
+            tank: 15,
+            helicoptere: 1
+        }
     }
   };
 
@@ -142,17 +147,18 @@ function spawnUnit(unitType, row, col, health = 0) {
 
     tiles[row * COL_COUNT + col].appendChild(unit);
 
-    PAWN_MAP[row][col] = { type: unitType, health: health != 0 ? units[unitType].health : health };
+    PAWN_MAP[row][col] = { type: unitType, health: health == 0 ? units[unitType.split("_")[1]].health : health, enable: true };
 
     unit.addEventListener("click", (event) => {
         if (unitType.split("_")[0] != PLAYER_TURN) return;
 
-        moveUnit(col, row);
-    });
+        moveUnit(col, row, units[unitType.split("_")[1]].range, unitType.split("_")[1] == "heli");
+
+    }, { once: true });
 }
 
 
-function displayMovement(column, row, range) {
+function moveUnit(column, row, range, canFly = false) {
     tiles.forEach(cell => {
         cell.classList.add('disabled');
     });
@@ -163,18 +169,81 @@ function displayMovement(column, row, range) {
                 const newCol = column + j;
                 if (newRow >= 0 && newRow < ROW_COUNT && newCol >= 0 && newCol < COL_COUNT) {
                     const cellIndex = newRow * COL_COUNT + newCol;
+
+                    if (!canFly && tiles[cellIndex].getAttribute("data-type").includes("mountain")) continue; 
+
+                    if (tiles[cellIndex].children.length == 2) {
+                        if (tiles[cellIndex].children[1].getAttribute("data-type").split("_")[0] == PLAYER_TURN) continue;
+                    };
+
                     tiles[cellIndex].classList.remove('disabled');
+                    tiles[cellIndex].style.cursor = "pointer";
+
+                    tiles[cellIndex].addEventListener("click", () => {
+                        if (tiles[cellIndex].children.length == 2) {
+                            if (tiles[cellIndex].children[1].getAttribute("data-type").split("_")[0] == PLAYER_TURN) return;
+
+                            // remove the health of the attacked unit
+                            PAWN_MAP[newRow][newCol].health -= units[PAWN_MAP[row][column].type.split("_")[1]].power[tiles[cellIndex].children[1].getAttribute("data-type").split("_")[1]]
+
+                            console.log(PAWN_MAP[newRow][newCol].health)
+
+                            if (PAWN_MAP[newRow][newCol].health <= 0) {
+                                tiles[cellIndex].removeChild(tiles[cellIndex].children[1]);
+                                PAWN_MAP[newRow][newCol] = "";
+                            }
+
+                            tiles[newRow * COL_COUNT + newCol].classList.add('disabled');
+                            PAWN_MAP[row][column].enable = false;
+
+                        } else if (tiles[cellIndex].getAttribute("data-type").includes("city")) {
+
+                            console.log(tiles[cellIndex])
+                            /*
+                            PAWN_MAP[newRow][newCol] = PAWN_MAP[row][column];
+                            PAWN_MAP[row][column] = "";
+                            tiles[newRow * COL_COUNT + newCol].appendChild(tiles[row * COL_COUNT + column].children[1]);
+                            tiles[newRow * COL_COUNT + newCol].classList.add('disabled');
+                            PAWN_MAP[newRow][newCol].enable = false;
+                            */
+
+                        } else {
+                            console.log(PAWN_MAP[row][column])
+                            PAWN_MAP[row][column].enable = false;
+
+                            const unit = tiles[row * COL_COUNT + column].children[1];
+                            tiles[newRow * COL_COUNT + newCol].appendChild(unit);
+                            tiles[newRow * COL_COUNT + newCol].classList.add('disabled');
+
+                            PAWN_MAP[newRow][newCol] = PAWN_MAP[row][column];
+                            PAWN_MAP[row][column] = "";
+                        }
+
+                        return;
+
+                        tiles.forEach((cell, index) => {
+                            cell.classList.remove('disabled');
+                            cell.style.cursor = "default";
+
+                            if (cell.children.length == 2) {
+                                if (cell.children[1].getAttribute("data-type").split("_")[0] == PLAYER_TURN && !PAWN_MAP[Math.floor(index / COL_COUNT)][index % COL_COUNT].enable) {
+                                    cell.classList.add('disabled');
+
+                                }
+                            }
+
+                        });
+
+                        tiles.forEach(cell => {
+                            cell.removeEventListener("click", () => {});
+                        });
+
+                        set(ref(db, `games/${GAME_ID}/pawnMap`), PAWN_MAP);
+                    }, { once: true });
                 }
             }
         }
   }
-
-function moveUnit(originCol, originRaw) {
-    displayMovement(originCol, originRaw, 1);
-
-}
-
-
 
 function initializeMap() {
     get(ref(db, `games/${GAME_ID}`))
@@ -210,9 +279,11 @@ function initializeMap() {
 
                     set(ref(db, `games/${GAME_ID}/pawnMap`), PAWN_MAP);
 
-
                 } else {
                     PAWN_MAP = data.pawnMap;
+
+                    //spawnUnit("red_tank", 14, 4);
+
                     renderUnitMap();
                 }
             }
