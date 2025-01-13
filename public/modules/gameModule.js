@@ -9,6 +9,8 @@ const GAME_ID = getGameID();
 const ROW_COUNT = 15;
 const COL_COUNT = 20;
 
+let PLAYER_1_MONEY;
+let PLAYER_2_MONEY;
 let PLAYER_TURN;
 
 let PAWN_MAP = Array.from({ length: ROW_COUNT }, () => Array(COL_COUNT).fill(""));
@@ -139,6 +141,18 @@ function renderUnitMap() {
     }
 }
 
+function renderCity() {
+    for (let row = 0; row < ROW_COUNT; row++) {
+        for (let col = 0; col < COL_COUNT; col++) {
+            if (PAWN_MAP[row][col] == "red_city") {
+                tiles[row * COL_COUNT + col].children[0].src = IMAGE_CODE["red_city"];
+            } else if (PAWN_MAP[row][col] == "blue_city") {
+                tiles[row * COL_COUNT + col].children[0].src = IMAGE_CODE["blue_city"];
+            }
+        }
+    }
+}
+
 function spawnUnit(unitType, row, col, health = 0) {
     const unit = document.createElement("img");
     unit.src = IMAGE_CODE[unitType];
@@ -180,33 +194,36 @@ function moveUnit(column, row, range, canFly = false) {
                     tiles[cellIndex].style.cursor = "pointer";
 
                     tiles[cellIndex].addEventListener("click", () => {
+                        if (!PAWN_MAP[row][column].enable) return;
+                        
+                        // Player attack
                         if (tiles[cellIndex].children.length == 2) {
                             if (tiles[cellIndex].children[1].getAttribute("data-type").split("_")[0] == PLAYER_TURN) return;
 
                             // remove the health of the attacked unit
                             PAWN_MAP[newRow][newCol].health -= units[PAWN_MAP[row][column].type.split("_")[1]].power[tiles[cellIndex].children[1].getAttribute("data-type").split("_")[1]]
 
-                            console.log(PAWN_MAP[newRow][newCol].health)
-
                             if (PAWN_MAP[newRow][newCol].health <= 0) {
                                 tiles[cellIndex].removeChild(tiles[cellIndex].children[1]);
                                 PAWN_MAP[newRow][newCol] = "";
                             }
 
-                            tiles[newRow * COL_COUNT + newCol].classList.add('disabled');
                             PAWN_MAP[row][column].enable = false;
 
-                        } else if (tiles[cellIndex].getAttribute("data-type").includes("city")) {
+                        // PLayer take the city
+                        } else if (tiles[cellIndex].getAttribute("data-type").includes("city") && tiles[cellIndex].getAttribute("data-type").split("_")[0] != PLAYER_TURN) {
 
-                            console.log(tiles[cellIndex])
-                            /*
-                            PAWN_MAP[newRow][newCol] = PAWN_MAP[row][column];
-                            PAWN_MAP[row][column] = "";
-                            tiles[newRow * COL_COUNT + newCol].appendChild(tiles[row * COL_COUNT + column].children[1]);
-                            tiles[newRow * COL_COUNT + newCol].classList.add('disabled');
-                            PAWN_MAP[newRow][newCol].enable = false;
-                            */
+                            tiles[cellIndex].children[0].src = IMAGE_CODE[`${PLAYER_TURN}_city`];
+                            tiles[cellIndex].setAttribute("data-type", `${PLAYER_TURN}_city`);
+                            PAWN_MAP[newRow][newCol] = `${PLAYER_TURN}_city`;
 
+                            PAWN_MAP[row][column].enable = false;
+
+
+
+                            openShop(cellIndex);
+                            
+                        // PLayer move
                         } else {
                             console.log(PAWN_MAP[row][column])
                             PAWN_MAP[row][column].enable = false;
@@ -219,11 +236,12 @@ function moveUnit(column, row, range, canFly = false) {
                             PAWN_MAP[row][column] = "";
                         }
 
-                        return;
 
                         tiles.forEach((cell, index) => {
                             cell.classList.remove('disabled');
                             cell.style.cursor = "default";
+
+                            cell.removeEventListener("click", () => {});
 
                             if (cell.children.length == 2) {
                                 if (cell.children[1].getAttribute("data-type").split("_")[0] == PLAYER_TURN && !PAWN_MAP[Math.floor(index / COL_COUNT)][index % COL_COUNT].enable) {
@@ -231,11 +249,6 @@ function moveUnit(column, row, range, canFly = false) {
 
                                 }
                             }
-
-                        });
-
-                        tiles.forEach(cell => {
-                            cell.removeEventListener("click", () => {});
                         });
 
                         set(ref(db, `games/${GAME_ID}/pawnMap`), PAWN_MAP);
@@ -244,6 +257,7 @@ function moveUnit(column, row, range, canFly = false) {
             }
         }
   }
+
 
 function initializeMap() {
     get(ref(db, `games/${GAME_ID}`))
@@ -285,10 +299,190 @@ function initializeMap() {
                     //spawnUnit("red_tank", 14, 4);
 
                     renderUnitMap();
+                    renderCity();
                 }
             }
         });
 }
+
+function updateMoney() {
+    const player1Money = document.getElementById("player1-money");
+    const player2Money = document.getElementById("player2-money");
+
+    player1Money.textContent = PLAYER_1_MONEY + " $";
+    player2Money.textContent = PLAYER_2_MONEY + " $";
+
+    set(ref(db, `games/${GAME_ID}/player1Money`), PLAYER_1_MONEY);
+    set(ref(db, `games/${GAME_ID}/player2Money`), PLAYER_2_MONEY);
+}
+
+function openShop(tileIndex) {
+    const shop = document.querySelector(".shop");
+    shop.style.display = "block";
+
+    const shopNext = document.querySelector(".shop_next");
+    const shopPrevious = document.querySelector(".shop_previous");
+    const shopClose = document.querySelector(".shop_close");
+    const shopBuy = document.querySelector(".shop_buy");
+
+    const displayName = document.querySelector(".shop__container__item--name");
+    const displayImage = document.querySelector(".shop__container__item--image");
+    const displayPrice = document.querySelector(".shop__container__item--price");
+
+    
+    displayName.textContent = "inf";
+    displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_inf`]
+    displayPrice.textContent = units["inf"].price + " $";
+
+
+    if (PLAYER_TURN == "red") {
+        if (PLAYER_1_MONEY < units[displayName.textContent].price) {
+            shopBuy.classList.add("disabled");
+        }
+    }
+    
+    if (PLAYER_TURN == "blue") {
+        if (PLAYER_2_MONEY < units[displayName.textContent].price) {
+            shopBuy.classList.add("disabled");
+        }
+    }
+
+    shopNext.addEventListener("click", () => {
+        if (PLAYER_TURN == "red") {
+            if (PLAYER_1_MONEY < units["inf"].price) {
+                shopBuy.classList.add("disabled");
+            }
+        }
+    
+        if (PLAYER_TURN == "blue") {
+            if (PLAYER_2_MONEY < units["inf"].price) {
+                shopBuy.classList.add("disabled");
+            }
+        }
+
+        switch (displayName.textContent) {
+            case "inf":
+                displayName.textContent = "jeep";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_jeep`]
+                displayPrice.textContent = units["jeep"].price + " $";
+                break;
+            case "jeep":
+                displayName.textContent = "tank";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_tank`]
+                displayPrice.textContent = units["tank"].price + " $";
+                break;
+            case "tank":
+                displayName.textContent = "lm";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_lm`]
+                displayPrice.textContent = units["lm"].price + " $";
+                break;
+            case "lm":
+                displayName.textContent = "heli";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_heli`]
+                displayPrice.textContent = units["heli"].price + " $";
+                break;
+            case "heli":
+                displayName.textContent = "inf";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_inf`]
+                displayPrice.textContent = units["inf"].price + " $";
+                break;
+        }
+    });
+
+    shopPrevious.addEventListener("click", () => {
+        
+        if (PLAYER_TURN == "red") {
+            if (PLAYER_1_MONEY < units[displayName.textContent].price) {
+                shopBuy.classList.add("disabled");
+            }
+        }
+        
+        if (PLAYER_TURN == "blue") {
+            if (PLAYER_2_MONEY < units[displayName.textContent].price) {
+                shopBuy.classList.add("disabled");
+            }
+        }
+
+        switch (displayName.textContent) {
+            case "inf":
+                displayName.textContent = "heli";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_heli`]
+                displayPrice.textContent = units["heli"].price + " $";
+                break;
+            case "jeep":
+                displayName.textContent = "inf";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_inf`]
+                displayPrice.textContent = units["inf"].price + " $";
+                break;
+            case "tank":
+                displayName.textContent = "jeep";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_jeep`]
+                displayPrice.textContent = units["jeep"].price + " $";
+                break;
+            case "lm":
+                displayName.textContent = "tank";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_tank`]
+                displayPrice.textContent = units["tank"].price + " $";
+                break;
+            case "heli":
+                displayName.textContent = "lm";
+                displayImage.src = IMAGE_CODE[`${PLAYER_TURN}_lm`]
+                displayPrice.textContent = units["lm"].price + " $";
+                break;
+        }
+    })
+
+    shopClose.addEventListener("click", () => {
+        shop.style.display = "none";
+    });
+
+    shopBuy.addEventListener("click", () => {
+        //if (shopBuy.classList.contains("disabled")) return;
+        spawnUnit(`${PLAYER_TURN}_${displayName.textContent}`, Math.floor(tileIndex / COL_COUNT), tileIndex % COL_COUNT);
+
+        if (PLAYER_TURN == "red") {
+            PLAYER_1_MONEY -= units[displayName.textContent].price;
+        }
+
+        if (PLAYER_TURN == "blue") {
+            PLAYER_2_MONEY -= units[displayName.textContent].price;
+        }
+
+        updateMoney();
+
+        shop.style.display = "none";
+
+        set(ref(db, `games/${GAME_ID}/pawnMap`), PAWN_MAP);
+
+    });
+}
+
+function enableAllUnits() {
+    PAWN_MAP.forEach(row => {
+        row.forEach(cell => {
+            if (typeof cell == "object") {
+                cell.enable = true;
+            }
+        });
+    });
+}
+
+const playerTurnDisplay = document.querySelector(".player-turn");
+
+function displayPlayerTurn() {
+    playerTurnDisplay.textContent = PLAYER_TURN == "red" ? "Player turn : Red" : "Player turn : Blue";  
+}
+
+const passTurn = document.querySelector(".button_pass");
+
+passTurn.addEventListener("click", () => {
+    PLAYER_TURN = PLAYER_TURN == "red" ? "blue" : "red";
+
+    displayPlayerTurn();
+
+    set(ref(db, `games/${GAME_ID}/playerTurn`), PLAYER_TURN);
+    enableAllUnits();
+});
 
 
 
@@ -298,6 +492,11 @@ get(ref(db, `games/${GAME_ID}`))
             const data = snapshot.val();
 
             PLAYER_TURN = data.playerTurn;
+            displayPlayerTurn();
+
+            PLAYER_1_MONEY = data.player1Money;
+            PLAYER_2_MONEY = data.player2Money;
+
 
             // Get the map data
             get(ref(db, `maps/map_${data.mapType}`))

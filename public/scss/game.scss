@@ -5,8 +5,8 @@
 
     &__board {
         display: grid;
-        grid-template-columns: repeat(20, 50px); /* 20 columns */
-        grid-template-rows: repeat(15, 50px); /* 15 rows */
+        grid-template-columns: repeat(20, 45px); /* 20 columns */
+        grid-template-rows: repeat(15, 45px); /* 15 rows */
         gap: 1px; /* Space between cells */
         background-color: #333;
 
@@ -45,4 +45,99 @@
             object-fit: cover;
         }
     }
+}
+
+.shop {
+    margin: 30px;
+    display: none;
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #a1a1a1;
+        border-radius: 10px;
+        color: #333;
+
+        h1 {
+            font-size: 4em;
+        }
+
+        &__navigation {
+            display: flex;
+            align-items: center;
+
+            .shop_previous, .shop_next {
+                height: fit-content;
+
+                width: 75px;
+                border: none;
+                border-radius: 5px;
+                background-color: #333;
+                color: white;
+                cursor: pointer;
+            }
+        }
+
+        &__item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            cursor: pointer;
+
+            &--image {
+                width: 150px;
+                height: 150px;
+                object-fit: cover;
+            }
+
+            &--name {
+                font-size: 2em;
+            }
+
+            &--price {
+                font-size: 2em;
+            }
+        }
+
+        .shop_buy {
+            width: 75px;
+
+            &:not(.disabled):hover {
+                background-color: #444;
+            }
+
+            &.disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+        }
+
+        .shop_close {
+            width: 75px;
+            background-color: #521818;
+
+            &:hover {
+                background-color: #6b1f1f;
+            }
+        }
+    }
+}
+
+.player-turn {
+    margin-top: 20px;
+    font-size: 2em;
+}
+
+.button_pass {
+    margin-top: 5px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
