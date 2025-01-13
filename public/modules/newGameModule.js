@@ -94,7 +94,6 @@ function pickRandomMap() {
 }
 
 async function createGame() {
-
     const player1Uid = auth.currentUser.uid;
     const player2Uid = await getUidByName(searchBar.value.trim());
     
@@ -106,7 +105,8 @@ async function createGame() {
         player2: player2Uid,
         player2Money: 0,
         mapType: pickRandomMap(),
-        pawnMap: null,
+        playerTurn: Math.random() < 0.5 ? "red" : "blue",
+        pawnMap: 0,
         status: "ongoing",
         createdAt: Date.now() 
     };
@@ -121,6 +121,25 @@ async function createGame() {
             throw error;
         });
 }
+
+function deleteExistingGame() {
+    get(ref(db, `games`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    const gameId = childSnapshot.key;
+
+                    if (data.player1 === auth.currentUser.uid || data.player2 === auth.currentUser.uid) {
+                        set(ref(db, `games/${gameId}`), null);
+                    }
+                });
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
   
 searchBar.addEventListener("input", (event) => {
     const searchText = event.target.value;
@@ -130,11 +149,15 @@ searchBar.addEventListener("input", (event) => {
 });
     
 newGameBtn.addEventListener("click", async () => {
+    if (newGameBtn.classList.contains('disabled')) return;
+
     const searchText = searchBar.value.trim();
 
     if (!searchText) return;
 
     console.log(searchBar.value);
+
+    deleteExistingGame();
 
     createGame().then((gameId) => {
         window.location.href = `game.html?id=${gameId}`;

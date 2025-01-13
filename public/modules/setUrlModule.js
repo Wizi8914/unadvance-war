@@ -75,7 +75,6 @@ function initializeHeader() {
                 .then((snapshot) => {
                     const player1 = snapshot.val();
 
-                    console.log(player1);
                     document.getElementById("player1-name").textContent = player1.name;
                     document.getElementById("player1-email").textContent = player1.email;
                 });
@@ -84,7 +83,6 @@ function initializeHeader() {
                 .then((snapshot) => {
                     const player2 = snapshot.val();
 
-                    console.log(player2);
                     document.getElementById("player2-name").textContent = player2.name;
                     document.getElementById("player2-email").textContent = player2.email;
                 });

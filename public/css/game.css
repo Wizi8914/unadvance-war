@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 .game__board {
   display: grid;
@@ -23,8 +22,15 @@
   align-items: center;
 }
 .game__board__cell:hover {
-  cursor: pointer;
   opacity: 0.8;
+}
+.game__board__cell.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.game__board__cell .pawn {
+  cursor: pointer;
+  position: absolute;
 }
 .game__board__background-image {
   width: 100%;

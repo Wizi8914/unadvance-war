@@ -52,7 +52,6 @@ submitBtn.addEventListener("click", event => {
         const errorMessage = error.message;
 
         displayErrorCode(errorCode);
-        // ..
     });
 });
 

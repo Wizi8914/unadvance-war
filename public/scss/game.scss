@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 
     &__board {
         display: grid;
@@ -25,8 +24,17 @@
             align-items: center;
 
             &:hover {
-                cursor: pointer;
                 opacity: 0.8;
+            }
+
+            &.disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            .pawn {
+                cursor: pointer;
+                position: absolute;
             }
         }
 
